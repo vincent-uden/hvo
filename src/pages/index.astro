@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Månadens HVO">
+	<main class="max-w-screen-sm mx-auto">
+		<h1 class="text-4xl">HVO Priser</h1>
+		<h2 class="text-2xl">HVO pris idag:</h2>
+		<p id="todayPrice">0kr</p>
+		<p id="todayExVAT">0kr</p>
+		<h2 class="text-2xl">HVO snittpris denna månad:</h2>
+		<p>0kr</p>
+	</main>
+</Layout>
+
+<script>
+import { removeVAT } from "../price";
+
+let response = await fetch("/api/today");
+if (response.ok) {
+	const todayData = await response.json();
+	
+	const todayPrice = document.getElementById("todayPrice");
+	todayPrice!!.innerText = todayData.price + " kr/l (inkl. moms)";
+
+	const todayExVAT = document.getElementById("todayExVAT");
+	todayExVAT!!.innerText = removeVAT(todayData.price) + " kr/l (exkl. moms)";
+}
+</script>
