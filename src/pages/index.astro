@@ -6,10 +6,14 @@ import Layout from '../layouts/Layout.astro';
 	<main class="max-w-screen-sm mx-auto">
 		<h1 class="text-4xl">HVO Priser</h1>
 		<h2 class="text-2xl">HVO pris idag:</h2>
-		<p id="todayPrice">0kr</p>
-		<p id="todayExVAT">0kr</p>
-		<h2 class="text-2xl">HVO snittpris denna månad:</h2>
-		<p>0kr</p>
+		<p id="todayPrice">-</p>
+		<p id="todayExVAT">-</p>
+		<h2 id="avgHeader" class="text-2xl">HVO snittpris denna månad</h2>
+		<p id="monthPrice">-</p>
+		<p id="monthPriceExVAT">-</p>
+		<h2 class="text-2xl">HVO snittpris de senaste 30 dagarna</h2>
+		<p id="30dayPrice">-</p>
+		<p id="30dayPriceExVAT">-</p>
 	</main>
 </Layout>
 
@@ -26,4 +30,61 @@ if (response.ok) {
 	const todayExVAT = document.getElementById("todayExVAT");
 	todayExVAT!!.innerText = removeVAT(todayData.price) + " kr/l (exkl. moms)";
 }
+
+let now = new Date();
+let thirtyDaysAgo = new Date(now);
+thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+let oneMonthAgo = new Date(now);
+oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+async function updateAggregatePrice(id: string, date: Date, vat: boolean) {
+	let monthResp = await fetch(`/api/price/${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`);
+	if (response.ok) {
+		const latest30Days: any[] = await monthResp.json();
+		
+		let avgPrice = latest30Days.reduce((acc, x) => acc + x.avg / latest30Days.length, 0);
+		if (!vat) {
+			avgPrice = removeVAT(avgPrice);
+		}
+		
+		const monthPrice = document.getElementById(id);
+		if (monthPrice != null) {
+			monthPrice!!.innerText = avgPrice + " kr/l";
+			if (vat) {
+				monthPrice.innerText += " (inkl. moms)";
+			} else {
+				monthPrice.innerText += " (exkl. moms)";
+			}
+		}
+	}
+}
+
+updateAggregatePrice("monthPrice", oneMonthAgo, true);
+updateAggregatePrice("monthPriceExVAT", oneMonthAgo, false);
+updateAggregatePrice("30dayPrice", thirtyDaysAgo, true);
+updateAggregatePrice("30dayPriceExVAT", thirtyDaysAgo, false);
+
+const monthNames = [
+	"januari",
+	"februari",
+	"mars",
+	"april",
+	"maj",
+	"juni",
+	"juli",
+	"augusti",
+	"september",
+	"oktober",
+	"november",
+	"december",
+];
+
+const currentMonth = monthNames[now.getMonth()];
+console.log(currentMonth);
+
+const avgHeader = document.getElementById("avgHeader");
+console.log(avgHeader)
+avgHeader!!.innerText = "HVO snittpris " + currentMonth;
+
 </script>
