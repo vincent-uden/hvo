@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 
 import { parse } from "node-html-parser";
+import { db } from "../../db/drizzle";
+import { priceLogs, type NewPriceLog } from "../../db/schema";
 
 export const GET: APIRoute = async ({ params, request }) => {
   const response = await fetch(
@@ -14,12 +16,19 @@ export const GET: APIRoute = async ({ params, request }) => {
     let priceCell = hvoRow?.querySelectorAll("td")[1];
     let dateCell = hvoRow?.querySelectorAll("td")[2];
     
-    console.log(priceCell?.innerText);
-    console.log(dateCell?.innerText);
+    let price = priceCell?.innerText.replaceAll("\n", "").split(" ")[0].replace(",", ".");
+    
+    if (price != null) {
+      let newPrice: NewPriceLog = {
+        price: price,
+      };
+      
+      await db.insert(priceLogs).values(newPrice);
+    }
 
     return new Response(
       JSON.stringify({
-        price: Number(priceCell?.innerText.replaceAll("\n", "").split(" ")[0].replace(",", ".")),
+        price: Number(price),
         date: dateCell?.innerText.replaceAll("\n", ""),
       })
     );

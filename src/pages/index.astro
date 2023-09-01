@@ -20,7 +20,7 @@ import Layout from '../layouts/Layout.astro';
 <script>
 import { removeVAT } from "../price";
 
-let response = await fetch("/api/logPrice", {method: "POST"});
+let response = await fetch("/api/today");
 if (response.ok) {
 	const todayData = await response.json();
 	
