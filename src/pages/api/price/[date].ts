@@ -1,8 +1,7 @@
 import type { APIRoute } from "astro";
 
 import { db } from "../../../db/drizzle";
-import { priceLogs } from "../../../db/schema";
-import { gt, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 export const GET: APIRoute = async ({ params, request }) => {
   const date = params.date;
@@ -11,15 +10,18 @@ export const GET: APIRoute = async ({ params, request }) => {
   }
   const startDate = new Date(date);
   const endDate = new Date(startDate);
-  endDate.setMonth(endDate.getMonth()+1)
-  
-  const priceRows = await db.select().from(priceLogs).where(gt(priceLogs.createdAt, startDate));
-  const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day;`
+  endDate.setMonth(endDate.getMonth() + 1);
+
+  const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day ORDER BY day ASC;`;
   const entries = await db.execute(query);
-  
+
   let output: any = [];
-  entries.forEach((x) => output.push(x));
-  
+  entries.forEach((x) => {
+    if ((x.day as Date) > startDate && (x.day as Date) < endDate) {
+      output.push(x);
+    }
+  });
+
   return new Response(JSON.stringify(output));
 };
 

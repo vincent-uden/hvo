@@ -10,5 +10,6 @@ declare global {
   var db: PostgresJsDatabase<Record<string, never>> | undefined;
 }
 
-const drizzle_client = global.drizzle_client || postgres(process.env.PSQL_URL!!);
+const drizzle_client =
+  global.drizzle_client || postgres(process.env.PSQL_URL!!);
 export const db = global.db || drizzle(drizzle_client);

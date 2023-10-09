@@ -7,5 +7,5 @@ export default {
   out: "./drizzle",
   dbCredentials: {
     connectionString: process.env.PSQL_URL!!,
-  }
+  },
 } satisfies Config;
