@@ -10,9 +10,9 @@ export const GET: APIRoute = async ({ params, request }) => {
   }
   const startDate = new Date(date);
   const endDate = new Date(startDate);
-  endDate.setMonth(endDate.getMonth()+1)
+  endDate.setMonth(endDate.getMonth() + 1);
 
-  const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day ORDER BY day ASC;`
+  const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day ORDER BY day ASC;`;
   const entries = await db.execute(query);
 
   let output: any = [];

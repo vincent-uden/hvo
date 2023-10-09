@@ -1,16 +1,20 @@
-import {createRequire as __$$createRequireN} from 'module';var require=__$$createRequireN(import.meta.url);
+import { createRequire as __$$createRequireN } from "module";
+var require = __$$createRequireN(import.meta.url);
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
+var __esm = (fn, res) =>
+  function __init() {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])((fn = 0))), res;
+  };
 
 // ../../../../home/vincent/.npm/_npx/1a90fbf4b9b2801d/node_modules/tsno/dist/client.js
 import { createRequire as __$$createRequire } from "module";
 var require2;
 var init_client = __esm({
   "../../../../home/vincent/.npm/_npx/1a90fbf4b9b2801d/node_modules/tsno/dist/client.js"() {
-    require2 = __$$createRequire("file:///home/vincent/.npm/_npx/1a90fbf4b9b2801d/node_modules/tsno/dist/client.js");
-  }
+    require2 = __$$createRequire(
+      "file:///home/vincent/.npm/_npx/1a90fbf4b9b2801d/node_modules/tsno/dist/client.js",
+    );
+  },
 });
 
 // src/db/migrate.ts

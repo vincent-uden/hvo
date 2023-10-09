@@ -6,7 +6,7 @@ import { priceLogs, type NewPriceLog } from "../../db/schema";
 
 export const GET: APIRoute = async ({ params, request }) => {
   const response = await fetch(
-    "https://www.preem.se/privat/drivmedel/drivmedelspriser/"
+    "https://www.preem.se/privat/drivmedel/drivmedelspriser/",
   );
   if (response.ok) {
     let parsedHtml = parse(await response.text());
@@ -15,14 +15,17 @@ export const GET: APIRoute = async ({ params, request }) => {
     let hvoRow = priceTable?.querySelectorAll("tr")[3];
     let priceCell = hvoRow?.querySelectorAll("td")[1];
     let dateCell = hvoRow?.querySelectorAll("td")[2];
-    
-    let price = priceCell?.innerText.replaceAll("\n", "").split(" ")[0].replace(",", ".");
-    
+
+    let price = priceCell?.innerText
+      .replaceAll("\n", "")
+      .split(" ")[0]
+      .replace(",", ".");
+
     if (price != null) {
       let newPrice: NewPriceLog = {
         price: price,
       };
-      
+
       await db.insert(priceLogs).values(newPrice);
     }
 
@@ -30,13 +33,13 @@ export const GET: APIRoute = async ({ params, request }) => {
       JSON.stringify({
         price: Number(price),
         date: dateCell?.innerText.replaceAll("\n", ""),
-      })
+      }),
     );
   }
 
   return new Response(
     JSON.stringify({
       message: "Preem couldn't be reached",
-    })
+    }),
   );
 };
