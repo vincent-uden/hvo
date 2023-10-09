@@ -57,8 +57,9 @@ import Layout from "../layouts/Layout.astro";
   let thirtyDaysAgo = new Date(now);
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  let oneMonthAgo = new Date(now);
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  let startOfMonth = new Date(now);
+  startOfMonth.setDate(1);
+  console.log(startOfMonth);
 
   async function updateAggregatePrice(id: string, date: Date, vat: boolean) {
     let monthResp = await fetch(
@@ -79,7 +80,7 @@ import Layout from "../layouts/Layout.astro";
 
       const monthPrice = document.getElementById(id);
       if (monthPrice != null) {
-        monthPrice!!.innerText = avgPrice + " kr/l";
+        monthPrice!!.innerText = avgPrice.toFixed(2) + " kr/l";
         if (vat) {
           monthPrice.innerText += " (inkl. moms)";
         } else {
@@ -89,8 +90,8 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
-  updateAggregatePrice("monthPrice", oneMonthAgo, true);
-  updateAggregatePrice("monthPriceExVAT", oneMonthAgo, false);
+  updateAggregatePrice("monthPrice", startOfMonth, true);
+  updateAggregatePrice("monthPriceExVAT", startOfMonth, false);
   updateAggregatePrice("30dayPrice", thirtyDaysAgo, true);
   updateAggregatePrice("30dayPriceExVAT", thirtyDaysAgo, false);
 
