@@ -39,9 +39,13 @@ import Layout from "../layouts/Layout.astro";
           Snittpris
         </h2>
         <div class="h-6" />
-        <h2 id="avgHeader" class="text-2xl font-semibold">
-          Denna månad
-        </h2>
+        <div class="flex flex-row gap-4">
+          <p id="monthBefore" class="text-2xl font-bold cursor-pointer select-none">&lt;</p>
+          <h2 id="avgHeader" class="text-2xl font-semibold grow w-56">
+            Denna månad
+          </h2>
+          <p id="monthAfter" class="text-2xl font-bold cursor-pointer select-none">&gt;</p>
+        </div>
         <p id="monthPrice">-</p>
         <p id="monthPriceExVAT">-</p>
         <div class="h-4" />
@@ -70,7 +74,7 @@ import Layout from "../layouts/Layout.astro";
 
       const todayExVAT = document.getElementById("todayExVAT");
       todayExVAT!!.innerText =
-        removeVAT(todayData.price) + " kr/l (exkl. moms)";
+        removeVAT(todayData.price).toFixed(2) + " kr/l (exkl. moms)";
     }
 
     let now = new Date();
@@ -79,7 +83,6 @@ import Layout from "../layouts/Layout.astro";
 
     let startOfMonth = new Date(now);
     startOfMonth.setDate(1);
-    console.log(startOfMonth);
 
     async function updateAggregatePrice(id: string, date: Date, vat: boolean) {
       let monthResp = await fetch(
@@ -130,12 +133,46 @@ import Layout from "../layouts/Layout.astro";
       "december",
     ];
 
-    const currentMonth = monthNames[now.getMonth()];
-    console.log(currentMonth);
+    let currentMonth = monthNames[now.getMonth()];
 
     const avgHeader = document.getElementById("avgHeader");
-    console.log(avgHeader);
-    avgHeader!!.innerText = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
+    avgHeader!!.innerText = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1) + " " + now.getFullYear();
+
+    const monthBefore = document.getElementById("monthBefore");
+    const monthAfter = document.getElementById("monthAfter");
+    monthBefore.addEventListener("click", selectPreviousMonth);
+    monthAfter.addEventListener("click", selectNextMonth);
+
+    function selectPreviousMonth() {
+      now.setMonth(now.getMonth() - 1);
+
+      startOfMonth = new Date(now);
+      startOfMonth.setDate(1);
+
+      currentMonth = monthNames[now.getMonth()];
+
+      avgHeader!!.innerText = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1) + " " + now.getFullYear();
+
+      updateAggregatePrice("monthPrice", startOfMonth, true);
+      updateAggregatePrice("monthPriceExVAT", startOfMonth, false);
+    }
+
+    function selectNextMonth() {
+      const actualNow = new Date();
+      if ((now.getMonth() < actualNow.getMonth() && now.getFullYear() <= actualNow.getFullYear()) || now.getFullYear() < actualNow.getFullYear()) {
+        now.setMonth(now.getMonth() + 1);
+      }
+
+      startOfMonth = new Date(now);
+      startOfMonth.setDate(1);
+
+      currentMonth = monthNames[now.getMonth()];
+
+      avgHeader!!.innerText = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1) + " " + now.getFullYear();
+
+      updateAggregatePrice("monthPrice", startOfMonth, true);
+      updateAggregatePrice("monthPriceExVAT", startOfMonth, false);
+    }
   </script>
 
   <style>
