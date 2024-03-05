@@ -12,7 +12,7 @@
   "dependencies": {
     "@astrojs/tailwind": "^5.0.0",
     "@astrojs/vercel": "^4.0.2",
-    "astro": "^3.0.5",
+    "astro": "^3.1.2",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.5",
     "node-html-parser": "^6.1.6",
