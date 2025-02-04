@@ -6,7 +6,7 @@ import { priceLogs, type NewPriceLog } from "../../db/schema";
 
 export const GET: APIRoute = async ({ params, request }) => {
   const response = await fetch(
-    "https://www.preem.se/privat/drivmedel/drivmedelspriser/",
+    "https://www.preem.se/foretag/kund-hos-preem/listpriser/listpriser-foretagskort/",
   );
   if (response.ok) {
     let parsedHtml = parse(await response.text());
