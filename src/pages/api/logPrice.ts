@@ -4,39 +4,54 @@ import { parse } from "node-html-parser";
 import { db } from "../../db/drizzle";
 import { priceLogs, type NewPriceLog } from "../../db/schema";
 
-export const POST: APIRoute = async ({ params, request }) => {
-  const response = await fetch(
-    "https://www.preem.se/foretag/kund-hos-preem/listpriser/listpriser-foretagskort/",
-  );
-  if (response.ok) {
-    let parsedHtml = parse(await response.text());
+export async function scrapePrice(): Promise<
+  { log: NewPriceLog; date: string | undefined } | undefined
+> {
+  try {
+    const response = await fetch("https://www.preem.se/foretag/listpriser/");
+    if (response.ok) {
+      let parsedHtml = parse(await response.text());
 
-    let priceTable = parsedHtml.querySelector("table");
-    let hvoRow = priceTable?.querySelectorAll("tr")[3];
-    let priceCell = hvoRow?.querySelectorAll("td")[1];
-    let dateCell = hvoRow?.querySelectorAll("td")[2];
+      let priceTable = parsedHtml.querySelector("table");
+      let hvoRow = priceTable?.querySelectorAll("tr")[2];
+      let priceCell = hvoRow
+        ?.querySelectorAll("td")[1]
+        .querySelectorAll("span")[1];
+      let dateCell = parsedHtml.querySelector("div>div>p>strong");
 
-    let price = priceCell?.innerText
-      .replaceAll("\n", "")
-      .split(" ")[0]
-      .replace(",", ".");
+      let price = priceCell?.innerText
+        .replaceAll("\n", "")
+        .split(" ")[0]
+        .replace(",", ".");
+      if (price === undefined) {
+        return undefined;
+      } else {
+        return {
+          log: { price },
+          date: dateCell?.innerText.split(": ")[1],
+        };
+      }
+    } else {
+      return undefined;
 
-    if (price != null) {
-      let newPrice: NewPriceLog = {
-        price: price,
-      };
-
-      await db.insert(priceLogs).values(newPrice);
     }
+  } catch {
+    return undefined;
+  }
+}
+
+export const POST: APIRoute = async ({ params, request }) => {
+  let data = await scrapePrice();
+  if (data !== undefined) {
+    await db.insert(priceLogs).values(data.log);
 
     return new Response(
       JSON.stringify({
-        price: Number(price),
-        date: dateCell?.innerText.replaceAll("\n", ""),
+        price: Number(data?.log.price),
+        date: data?.date,
       }),
     );
   }
-
   return new Response(
     JSON.stringify({
       message: "Preem couldn't be reached",
