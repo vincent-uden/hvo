@@ -33,6 +33,7 @@ export async function scrapePrice(): Promise<
       }
     } else {
       return undefined;
+
     }
   } catch {
     return undefined;
