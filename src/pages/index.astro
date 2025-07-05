@@ -101,8 +101,6 @@ import Layout from "../layouts/Layout.astro";
       );
       if (monthResp.ok) {
         const latest30Days: any[] = await monthResp.json();
-        console.log(latest30Days);
-        console.log(monthResp);
 
         let avgPrice = latest30Days.reduce(
           (acc, x) => acc + x.avg / latest30Days.length,

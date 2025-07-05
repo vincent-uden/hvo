@@ -4,7 +4,6 @@ import { db } from "../../../db/drizzle";
 import { sql } from "drizzle-orm";
 
 export const GET: APIRoute = async ({ params, request }) => {
-  console.error("Inside api rout", params, request);
   const date = params.date;
   if (date == null) {
     return new Response(JSON.stringify({}));
@@ -13,13 +12,8 @@ export const GET: APIRoute = async ({ params, request }) => {
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
-  console.error(startDate, endDate);
-
   const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day ORDER BY day ASC;`;
   const entries = await db.execute(query);
-
-  console.error(query);
-  console.error(entries);
 
   let output: any = [];
   entries.forEach((x) => {
@@ -27,8 +21,6 @@ export const GET: APIRoute = async ({ params, request }) => {
       output.push(x);
     }
   });
-
-  console.error(output);
 
   return new Response(JSON.stringify(output));
 };
