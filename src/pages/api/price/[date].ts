@@ -4,6 +4,7 @@ import { db } from "../../../db/drizzle";
 import { sql } from "drizzle-orm";
 
 export const GET: APIRoute = async ({ params, request }) => {
+  console.log("Inside api rout", params, request);
   const date = params.date;
   if (date == null) {
     return new Response(JSON.stringify({}));
