@@ -12,8 +12,13 @@ export const GET: APIRoute = async ({ params, request }) => {
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
+  console.log(startDate, endDate);
+
   const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day ORDER BY day ASC;`;
   const entries = await db.execute(query);
+
+  console.log(query);
+  console.log(entries);
 
   let output: any = [];
   entries.forEach((x) => {
@@ -21,6 +26,8 @@ export const GET: APIRoute = async ({ params, request }) => {
       output.push(x);
     }
   });
+
+  console.log(output);
 
   return new Response(JSON.stringify(output));
 };
