@@ -1,10 +1,14 @@
-import { numeric, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const priceLogs = pgTable("price_logs", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  price: numeric("price", { precision: 8, scale: 2 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+export const priceHistory = sqliteTable("price_history", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  date: text("date").notNull(), // ISO 8601 format: YYYY-MM-DD
+  hvo100Price: real("hvo100_price").notNull(),
+  dieselPrice: real("diesel_price").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  source: text("source").notNull().default("scraped"), // 'scraped', 'backfill', 'manual'
 });
 
-export type PriceLog = typeof priceLogs.$inferSelect;
-export type NewPriceLog = typeof priceLogs.$inferInsert;
+export type PriceHistory = typeof priceHistory.$inferSelect;
+export type NewPriceHistory = typeof priceHistory.$inferInsert;

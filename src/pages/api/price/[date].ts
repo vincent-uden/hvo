@@ -1,28 +1,36 @@
 import type { APIRoute } from "astro";
 
 import { db } from "../../../db/drizzle";
-import { sql } from "drizzle-orm";
+import { priceHistory } from "../../../db/schema";
+import { and, gte, lte } from "drizzle-orm";
 
-export const GET: APIRoute = async ({ params, request }) => {
+export const GET: APIRoute = async ({ params }) => {
   const date = params.date;
   if (date == null) {
     return new Response(JSON.stringify({}));
   }
+
   const startDate = new Date(date);
   const endDate = new Date(startDate);
   endDate.setMonth(endDate.getMonth() + 1);
 
-  const query = sql`SELECT date_trunc('day', created_at, 'GMT') as day, avg(price) FROM price_logs GROUP BY day ORDER BY day ASC;`;
-  const entries = await db.execute(query);
+  // Format dates as ISO strings (YYYY-MM-DD) for comparison
+  const startDateStr = startDate.toISOString().split("T")[0];
+  const endDateStr = endDate.toISOString().split("T")[0];
 
-  let output: any = [];
-  entries.forEach((x) => {
-    if ((x.day as Date) > startDate && (x.day as Date) < endDate) {
-      output.push(x);
-    }
-  });
+  // Query using Drizzle ORM with SQLite-compatible date comparison
+  const entries = await db
+    .select()
+    .from(priceHistory)
+    .where(
+      and(
+        gte(priceHistory.date, startDateStr),
+        lte(priceHistory.date, endDateStr),
+      ),
+    )
+    .orderBy(priceHistory.date);
 
-  return new Response(JSON.stringify(output));
+  return new Response(JSON.stringify(entries));
 };
 
-// -> 2023-08-01 -> [ 2023-08-01: 22.65, 2023-08-02: 24:41, ... ]
+// -> 2023-08-01 -> [ { date: "2023-08-01", hvo100Price: 22.65, dieselPrice: 24.41, ... }, ... ]

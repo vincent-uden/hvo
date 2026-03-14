@@ -1,32 +1,61 @@
 {
   "version": "5",
-  "dialect": "pg",
-  "id": "7615309d-334c-4b21-8b8d-73e30f1c27dc",
+  "dialect": "sqlite",
+  "id": "0225d8d9-0a67-4be2-b707-38018fc7e26e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "price_logs": {
-      "name": "price_logs",
-      "schema": "",
+    "price_history": {
+      "name": "price_history",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": true
         },
-        "price": {
-          "name": "price",
-          "type": "numeric(8, 2)",
+        "date": {
+          "name": "date",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
+        },
+        "hvo100_price": {
+          "name": "hvo100_price",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "diesel_price": {
+          "name": "diesel_price",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'scraped'"
         }
       },
       "indexes": {},
@@ -36,7 +65,6 @@
     }
   },
   "enums": {},
-  "schemas": {},
   "_meta": {
     "schemas": {},
     "tables": {},
