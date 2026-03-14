@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",
-    "@astrojs/vercel": "^7.8.2",
+    "@astrojs/vercel": "^9.0.0",
     "@libsql/client": "^0.4.0",
-    "astro": "^4.16.0",
+    "astro": "^5.2.0",
     "dotenv": "^16.6.1",
     "drizzle-orm": "^0.30.10",
     "node-html-parser": "^6.1.13",
