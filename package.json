@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "test:scraping": "bun run scripts/test-scraping.ts",
-    "backfill": "bun run scripts/backfill-prices.ts"
+    "backfill": "bun run scripts/backfill-prices.ts",
+    "backfill:dry": "bun run scripts/backfill-prices.ts --dry-run"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",
