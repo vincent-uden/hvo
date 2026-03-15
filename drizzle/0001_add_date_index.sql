@@ -1,0 +1,1 @@
+CREATE INDEX `price_history_date_idx` ON `price_history` (`date`);

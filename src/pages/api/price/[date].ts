@@ -30,7 +30,11 @@ export const GET: APIRoute = async ({ params }) => {
     )
     .orderBy(priceHistory.date);
 
-  return new Response(JSON.stringify(entries));
+  return new Response(JSON.stringify(entries), {
+    headers: {
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
 };
 
 // -> 2023-08-01 -> [ { date: "2023-08-01", hvo100Price: 22.65, dieselPrice: 24.41, ... }, ... ]
