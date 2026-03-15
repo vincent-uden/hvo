@@ -11,12 +11,18 @@ export interface ScrapedPriceData {
 
 export async function scrapePrices(): Promise<ScrapedPriceData | undefined> {
   try {
+    const fetchStart = Date.now();
     const response = await fetch("https://www.preem.se/foretag/listpriser/");
+    const fetchDuration = Date.now() - fetchStart;
+    console.log(`⏱️ [logPrice.ts] HTTP request to Preem: ${fetchDuration}ms`);
+
     if (!response.ok) {
       return undefined;
     }
 
-    const parsedHtml = parse(await response.text());
+    const parseStart = Date.now();
+    const responseText = await response.text();
+    const parsedHtml = parse(responseText);
 
     // Find the first table (it contains both Diesel and HVO prices)
     const tables = parsedHtml.querySelectorAll("table");
@@ -73,6 +79,8 @@ export async function scrapePrices(): Promise<ScrapedPriceData | undefined> {
         break;
       }
     }
+    const parseDuration = Date.now() - parseStart;
+    console.log(`⏱️ [logPrice.ts] HTML parsing: ${parseDuration}ms`);
 
     if (hvoPrice === undefined || dieselPrice === undefined || !priceDate) {
       console.log("Could not find all required data:", {
