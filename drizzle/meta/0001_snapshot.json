@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "0225d8d9-0a67-4be2-b707-38018fc7e26e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "prevId": "0225d8d9-0a67-4be2-b707-38018fc7e26e",
   "tables": {
     "price_history": {
       "name": "price_history",
@@ -58,7 +58,13 @@
           "default": "'scraped'"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "price_history_date_idx": {
+          "name": "price_history_date_idx",
+          "columns": ["date"],
+          "unique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}

@@ -1,12 +1,19 @@
 {
   "version": "5",
-  "dialect": "pg",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1693571013055,
-      "tag": "0000_useful_scourge",
+      "when": 1773530143656,
+      "tag": "0000_solid_cloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1740000000000,
+      "tag": "0001_add_date_index",
       "breakpoints": true
     }
   ]
