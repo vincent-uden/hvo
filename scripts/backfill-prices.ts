@@ -6,7 +6,7 @@ import path from "path";
 import { eq } from "drizzle-orm";
 
 const EXCEL_URL =
-  "https://www.datocms-assets.com/142139/1773061172-prishistorik-listpriser-2008-2026.xls";
+  "https://www.datocms-assets.com/142139/1774854298-listpris-saifa-prishistorik.xlsx";
 
 interface ParsedPriceRow {
   date: string; // YYYY-MM-DD
