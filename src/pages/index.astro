@@ -315,7 +315,7 @@ import Layout from "../layouts/Layout.astro";
           y: [],
           mode: "lines",
           name: "HVO 100",
-          line: { shape: "spline", color: "#ca7131", width: 3 },
+          line: { shape: "linear", color: "#ca7131", width: 3 },
         };
         
         let dieselData = {
@@ -323,7 +323,7 @@ import Layout from "../layouts/Layout.astro";
           y: [],
           mode: "lines",
           name: "Diesel",
-          line: { shape: "spline", color: "#9ca3af", width: 3 },
+          line: { shape: "linear", color: "#9ca3af", width: 3 },
         };
 
         for (let i = 0; i < latestData.length; i++) {
@@ -353,8 +353,8 @@ import Layout from "../layouts/Layout.astro";
         return { hvoData, dieselData };
       } else {
         return { 
-          hvoData: { x: [], y: [], mode: "lines", name: "HVO 100", line: { shape: "spline", color: "#ca7131", width: 3 } }, 
-          dieselData: { x: [], y: [], mode: "lines", name: "Diesel", line: { shape: "spline", color: "#9ca3af", width: 3 } } 
+          hvoData: { x: [], y: [], mode: "lines", name: "HVO 100", line: { shape: "linear", color: "#ca7131", width: 3 } }, 
+          dieselData: { x: [], y: [], mode: "lines", name: "Diesel", line: { shape: "linear", color: "#9ca3af", width: 3 } } 
         };
       }
     }
