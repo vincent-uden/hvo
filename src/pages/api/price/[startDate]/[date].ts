@@ -49,7 +49,12 @@ export const GET: APIRoute = async ({ params, request }) => {
     const parseStart = Date.now();
     const startDate = new Date(sDate);
     const endDate = new Date(date);
-    endDate.setMonth(endDate.getMonth() + 1);
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      return new Response(JSON.stringify({ error: "Invalid date range" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     log(requestId, `PARSE Dates parsed in ${Date.now() - parseStart}ms`);
     log(
       requestId,
@@ -72,7 +77,11 @@ export const GET: APIRoute = async ({ params, request }) => {
 
     const entries = await withTimeout(
       db
-        .select()
+        .select({
+          date: priceHistory.date,
+          hvo100Price: priceHistory.hvo100Price,
+          dieselPrice: priceHistory.dieselPrice,
+        })
         .from(priceHistory)
         .where(
           and(
